@@ -69,6 +69,9 @@ namespace RtdServer
                         if (u.change != 0) { sec.change = u.change; }
                         sec.bidPrice = u.bidPrice;
                         sec.bidVolume = u.bidVolume;
+                    } else
+                    {
+                        sec = u;
                     }
                     _securitiesBoard[u.code] = sec;
                 };
