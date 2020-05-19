@@ -1,0 +1,1 @@
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe C:\Users\Admin\source\repos\hello_rtd_excel\bin\Debug\hello_rtd_excel.dll /codebase

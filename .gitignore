@@ -3,6 +3,3 @@
 /bin
 /obj
 /packages
-
-# sign
-*.snk
