@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 using Microsoft.Office.Interop.Excel;
 using Newtonsoft.Json;
+using WebSocketSharp;
+using System.Linq.Expressions;
 
 namespace RtdServer
 {
@@ -21,6 +23,8 @@ namespace RtdServer
         private Random _rng;
         // map topicId to topicName
         private Dictionary<int, string> _topics;
+        private WebSocket _wsConn;
+        private Dictionary<string, Security> _securitiesBoard;
 
         public RTDDemoServer()
         {
@@ -46,6 +50,25 @@ namespace RtdServer
             _timer.Start();
             _rng = new Random();
             _topics = new Dictionary<int, string>();
+            _securitiesBoard = new Dictionary<string, Security>();
+            try
+            {
+                var wsServerAddr = "ws://tung:8001/";
+                var ws = new WebSocket(wsServerAddr);
+                ws.OnMessage += (sender, e) =>
+                {
+                    Console.WriteLine("{0} received msg: {1}", now(), e.Data);
+                    var xMsg = JsonConvert.DeserializeObject<XSecurity>(e.Data);
+                    var sec = xMsg.data;
+                    _securitiesBoard[sec.code] = sec;
+                };
+                ws.Connect();
+                Console.WriteLine("connected to {0}", wsServerAddr);
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine("error when connect WebSocket: 0}", err);
+            }
             return 1;
         }
 
@@ -93,16 +116,39 @@ namespace RtdServer
                 data[0, i - 1] = i;
                 data[1, i - 1] = getData(_topics[i]);
             }
-            Console.WriteLine("{0} RefreshData: {1}", now(), json(data));
+            // Console.WriteLine("{0} RefreshData: {1}", now(), json(data));
             return data;
         }
 
         private string getData(string topic)
         {
-            return String.Format("data from hello_rtd_excel for topic {0} at {1} {2}", topic, now(), _rng.Next(0, 100));
+            try
+            {
+                return json(_securitiesBoard[topic]);
+            } catch (Exception err)
+            {
+                Console.WriteLine("error when getData: {0}", err);
+                return err.ToString();
+            }
         }
 
         private string now() { return DateTime.UtcNow.ToString("o") + ": "; }
         private string json(object obj) { return JsonConvert.SerializeObject(obj); }
+    }
+
+    public class Security
+    {
+        public string code;
+        public float referencePrice;
+        public float last;
+        public float change;
+        public float bidPrice;
+        public float bidVolume;
+    }
+
+    public class XSecurity
+    {
+        public string sourceId;
+        public Security data;
     }
 }
