@@ -59,8 +59,18 @@ namespace RtdServer
                 {
                     Console.WriteLine("{0} received msg: {1}", now(), e.Data);
                     var xMsg = JsonConvert.DeserializeObject<XSecurity>(e.Data);
-                    var sec = xMsg.data;
-                    _securitiesBoard[sec.code] = sec;
+                    var u = xMsg.data;
+                    var sec = new Security();
+                    if (_securitiesBoard.ContainsKey(u.code))
+                    {
+                        sec = _securitiesBoard[u.code];
+                        if (u.referencePrice != 0) { sec.referencePrice = u.referencePrice; }
+                        if (u.last != 0) { sec.last = u.last; }
+                        if (u.change != 0) { sec.change = u.change; }
+                        sec.bidPrice = u.bidPrice;
+                        sec.bidVolume = u.bidVolume;
+                    }
+                    _securitiesBoard[u.code] = sec;
                 };
                 ws.Connect();
                 Console.WriteLine("connected to {0}", wsServerAddr);
@@ -125,10 +135,11 @@ namespace RtdServer
             try
             {
                 return json(_securitiesBoard[topic]);
-            } catch (Exception err)
+            }
+            catch (Exception err)
             {
-                Console.WriteLine("error when getData: {0}", err);
-                return err.ToString();
+                // Console.WriteLine("error when getData: {0}", err);
+                return String.Format("{0}'s data is not available", topic);
             }
         }
 
