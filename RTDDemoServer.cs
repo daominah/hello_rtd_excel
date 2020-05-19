@@ -1,9 +1,9 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using System;
-using System.Data.SqlClient;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Timers;
+using Newtonsoft.Json;
 
 namespace RtdServer
 {
@@ -21,7 +21,7 @@ namespace RtdServer
 
         public RTDDemoServer()
         {
-            FileStream _loggerP0 = new FileStream( 
+            FileStream _loggerP0 = new FileStream(
                 @"C:\Users\Admin\Desktop\aaa.txt", FileMode.Create, FileAccess.Write);
             StreamWriter _loggerP1 = new StreamWriter(_loggerP0);
             _loggerP1.AutoFlush = true;
@@ -64,7 +64,7 @@ namespace RtdServer
         // Called whenever Excel requests a new RTD topic from the RealTimeData server
         public dynamic ConnectData(int topicId, ref Array strings, ref bool GetNewValues)
         {
-            Console.WriteLine("ConnectData topicId: ", topicId, "Array: ", strings);
+            Console.WriteLine("ConnectData topicId: {0}, Array: {1}", topicId, JsonConvert.SerializeObject(strings));
             _topic = strings.GetValue(0).ToString();
             return getData(_topic);
         }
