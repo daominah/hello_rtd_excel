@@ -3,4 +3,6 @@
 /bin
 /obj
 /packages
-/~$TestRTD0.xlsx
+
+# MS office tmp
+/~$*
