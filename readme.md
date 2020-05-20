@@ -1,6 +1,6 @@
 ﻿# Excel RTD demo
 Create a DLL for receiving real time data in Excel.  
-
+Relative project [hello_electron](https://bitbucket.tradex.vn/scm/~tungdt/hello_electron.git)
 
 ### Steps
 * Create new project C# Class Library .Net Framework in [VS2019](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&rel=16)
