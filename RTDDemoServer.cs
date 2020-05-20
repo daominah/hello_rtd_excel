@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using Microsoft.Office.Interop.Excel;
 using Newtonsoft.Json;
 using WebSocketSharp;
-using System.Linq.Expressions;
 
 namespace RtdServer
 {
@@ -21,10 +20,10 @@ namespace RtdServer
         private IRTDUpdateEvent _callback;
         private Timer _timer;
         private Random _rng;
-        // map topicId to topicName
-        private Dictionary<int, string> _topics;
+        private Dictionary<int, string> _topics; // map topicId to topicName
         private WebSocket _wsConn;
         private Dictionary<string, Security> _securitiesBoard;
+        private bool _isElectronStopped;
 
         public RTDDemoServer()
         {
@@ -51,9 +50,11 @@ namespace RtdServer
             _rng = new Random();
             _topics = new Dictionary<int, string>();
             _securitiesBoard = new Dictionary<string, Security>();
+            _isElectronStopped = false;
+
             try
             {
-                var wsServerAddr = "ws://tung:8001/";
+                var wsServerAddr = "ws://10.100.50.102:8001/";
                 var ws = new WebSocket(wsServerAddr);
                 ws.OnMessage += (sender, e) =>
                 {
@@ -65,11 +66,11 @@ namespace RtdServer
                     {
                         sec = _securitiesBoard[u.code];
                         if (u.referencePrice != 0) { sec.referencePrice = u.referencePrice; }
-                        if (u.last != 0) { sec.last = u.last; }
-                        if (u.change != 0) { sec.change = u.change; }
+                        if (u.last != 0) { sec.last = u.last; sec.change = u.change; }
                         sec.bidPrice = u.bidPrice;
                         sec.bidVolume = u.bidVolume;
-                    } else
+                    }
+                    else
                     {
                         sec = u;
                     }
@@ -85,7 +86,20 @@ namespace RtdServer
             return 1;
         }
 
-        private void job(object sender, EventArgs args) { _callback.UpdateNotify(); }
+        private void job(object sender, EventArgs args) { 
+            _callback.UpdateNotify();
+            var techXApp = "daominah_electron_demo";
+            System.Diagnostics.Process[] pname = 
+                System.Diagnostics.Process.GetProcessesByName(techXApp);
+            if (pname.Length == 0) {
+                _isElectronStopped = true;
+                // Console.WriteLine("{0} stopped", techXApp);
+            }
+            else { 
+                _isElectronStopped = false;
+                // Console.WriteLine("{0} is running", techXApp);
+            }
+        }
 
         // Called by Excel if a given interval has elapsed since the last time
         // Excel was notified of updates from the RealTimeData server
@@ -135,6 +149,7 @@ namespace RtdServer
 
         private string getData(string topic)
         {
+            if (_isElectronStopped) return "plz turn on TechX app";
             try
             {
                 return json(_securitiesBoard[topic]);
