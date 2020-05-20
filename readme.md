@@ -9,7 +9,7 @@ Relative project [hello_electron](https://bitbucket.tradex.vn/scm/~tungdt/hello_
 * Project > Properties > Signing: sign the assembly
 * Build the solution, output is a DLL in `bin\Debug`
 * Run admin cmd:  
-`C:\Windows\Microsoft.NET\Framework64\v4.0.30319>RegAsm.exe PathToBuiltDLL /codebase`  
+`C:\Windows\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe /codebase PathToBuiltDLL`  
 * Write VBA functions to receive real time data: `WorksheetFunction.RTD(dLLName, vbNullString, topic, 1)`. Example is file `TestRTD0.xlsm` in this dir.
 
 ### References
