@@ -18,6 +18,7 @@ Relative project [hello_electron](https://bitbucket.tradex.vn/scm/~tungdt/hello_
 Example is file `TestRTD0.xlsm` in this dir.
 
 ### Add VBA functions description
+[Stackoverflow question](https://stackoverflow.com/questions/4262421/how-to-put-a-tooltip-on-a-user-defined-function)
 * [Method 1](https://docs.microsoft.com/en-us/office/vba/api/excel.application.macrooptions) 
 (built-in by Microsoft, need to press `Ctrl A` to show the description): 
 implement `Workbook_Open()` in the `VBAProject/ThisWorkBook`. Example:  
