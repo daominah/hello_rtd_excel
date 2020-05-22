@@ -11,7 +11,7 @@ Relative project [hello_electron](https://bitbucket.tradex.vn/scm/~tungdt/hello_
 * Project > Properties > Signing: sign the assembly
 * Build the solution, output is a DLL in `bin\Debug`
 * Run admin cmd (
-    [Register the built DLL](https://stackoverflow.com/questions/58018613/compiling-an-irtdserver-interface-for-excel-rtd-function-in-net-core)):  
+    [Register the built C# RTD DLL ](https://stackoverflow.com/questions/58018613/compiling-an-irtdserver-interface-for-excel-rtd-function-in-net-core)):  
 `C:\Windows\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe /codebase PathToBuiltDLL`  
 * Write VBA functions to receive real time data: 
 `WorksheetFunction.RTD(dLLName, vbNullString, topic, 1)`.  
@@ -37,4 +37,5 @@ End Sub
     * Create a new sheet with the name "\_IntelliSense\_" that save function's 
     descriptions. Example in the `TestRTD0.xlsm`.
     * In Excel, press `Alt T, I` to register file `ExcelDna.IntelliSense64.xll`.
-
+    * The add-in can be register by `regsvr32.exe` (
+        [register DLL on windows 64-bit](https://stackoverflow.com/questions/4897685/how-do-i-register-a-dll-file-on-windows-7-64-bit))
